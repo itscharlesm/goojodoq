@@ -182,6 +182,149 @@ function createDoubleRingFirework(x, y) {
     }
 }
 
+// NEW: Butterfly firework
+function createButterflyFirework(x, y) {
+    const colors = ['#ff99cc', '#ffccff', '#cc99ff', '#ff66cc'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let t = 0; t < Math.PI * 2; t += 0.1) {
+        const r = Math.sin(5 * t) * 10;
+        const bx = r * Math.cos(t);
+        const by = r * Math.sin(t);
+        const speed = 1.3;
+        particles.push(new Particle(x, y, color, bx * speed / 8, by * speed / 8));
+    }
+}
+
+// NEW: Flower firework
+function createFlowerFirework(x, y) {
+    const colors = ['#ff1493', '#ff69b4', '#ffb6c1', '#ffc0cb'];
+    
+    for (let petal = 0; petal < 6; petal++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const baseAngle = (Math.PI * 2 * petal) / 6;
+        
+        for (let i = 0; i < 20; i++) {
+            const angle = baseAngle + (Math.random() - 0.5) * 0.8;
+            const speed = Math.random() * 3 + 2;
+            particles.push(new Particle(
+                x, y, color,
+                Math.cos(angle) * speed,
+                Math.sin(angle) * speed
+            ));
+        }
+    }
+}
+
+// NEW: Diamond firework
+function createDiamondFirework(x, y) {
+    const colors = ['#00ffff', '#66ffff', '#99ffff', '#ccffff'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    const points = [
+        [0, -8], [6, 0], [0, 8], [-6, 0]
+    ];
+
+    points.forEach(point => {
+        for (let i = 0; i < 20; i++) {
+            const speed = 1.5;
+            particles.push(new Particle(
+                x, y, color,
+                point[0] * speed / 6 + (Math.random() - 0.5),
+                point[1] * speed / 6 + (Math.random() - 0.5)
+            ));
+        }
+    });
+}
+
+// NEW: Crossette firework (explodes then each particle explodes again)
+function createCrossetteFirework(x, y) {
+    const colors = ['#ff0000', '#ff6600', '#ffff00'];
+    
+    for (let i = 0; i < 20; i++) {
+        const angle = (Math.PI * 2 * i) / 20;
+        const speed = 5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particles.push(new Particle(
+            x, y, color,
+            Math.cos(angle) * speed,
+            Math.sin(angle) * speed
+        ));
+    }
+}
+
+// NEW: Palm tree firework
+function createPalmFirework(x, y) {
+    const colors = ['#ffaa00', '#ffcc00', '#ffee00'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 30; i++) {
+        const angle = (Math.PI * 2 * i) / 30;
+        const speed = Math.random() * 2 + 4;
+        particles.push(new Particle(
+            x, y, color,
+            Math.cos(angle) * speed * 0.3,
+            Math.sin(angle) * speed - 3
+        ));
+    }
+}
+
+// NEW: Chrysanthemum (dense burst)
+function createChrysanthemumFirework(x, y) {
+    const colors = ['#9900ff', '#cc00ff', '#ff00ff', '#ff66ff'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 150; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 2;
+        particles.push(new Particle(
+            x, y, color,
+            Math.cos(angle) * speed,
+            Math.sin(angle) * speed
+        ));
+    }
+}
+
+// NEW: Peony firework (soft romantic burst)
+function createPeonyFirework(x, y) {
+    const colors = ['#ffb6c1', '#ffc0cb', '#ffccdd', '#ffe4e1'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 100; i++) {
+        particles.push(new Particle(x, y, color));
+    }
+}
+
+// NEW: Triple ring firework
+function createTripleRingFirework(x, y) {
+    const colorSets = [
+        ['#ff0000', '#00ff00', '#0000ff'],
+        ['#ff00ff', '#ffff00', '#00ffff'],
+        ['#ff6600', '#66ff00', '#0066ff']
+    ];
+    const colors = colorSets[Math.floor(Math.random() * colorSets.length)];
+
+    for (let ring = 0; ring < 3; ring++) {
+        const radius = 3 + ring * 2;
+        for (let angle = 0; angle < Math.PI * 2; angle += 0.2) {
+            particles.push(new Particle(
+                x, y, colors[ring],
+                Math.cos(angle) * radius,
+                Math.sin(angle) * radius
+            ));
+        }
+    }
+}
+
+// NEW: Love burst (alternating hearts)
+function createLoveBurstFirework(x, y) {
+    createHeartFirework(x, y);
+    setTimeout(() => {
+        createHeartFirework(x + 50, y - 30);
+        createHeartFirework(x - 50, y - 30);
+    }, 100);
+}
+
 function launchRocket(startX, startY, targetX, targetY, callback) {
     let rocket = {
         x: startX,
@@ -230,64 +373,78 @@ pipe.addEventListener('click', () => {
     hasLaunched = true;
     instruction.style.display = 'none';
 
-    // Play music
     bgMusic.play().catch(e => console.log('Audio play failed:', e));
 
     const pipeRect = pipe.getBoundingClientRect();
     const startX = pipeRect.left + pipeRect.width / 2;
     const startY = pipeRect.top;
 
-    // Fireworks show sequence with varying speeds
+    // 61-second romantic fireworks show
     const sequence = [
-        // Phase 1: Rapid fire (0-5s) - Quick bursts
-        { delay: 0, type: createCircleFirework },
-        { delay: 400, type: createStarFirework },
-        { delay: 800, type: createRingFirework },
-        { delay: 1200, type: createCircleFirework },
-        { delay: 1600, type: createWillowFirework },
-        { delay: 2000, type: createSpiralFirework },
-        { delay: 2400, type: createCircleFirework },
-        { delay: 2800, type: createDoubleRingFirework },
-        { delay: 3200, type: createStarFirework },
-        { delay: 3600, type: createCircleFirework },
-        { delay: 4000, type: createRingFirework },
-        { delay: 4400, type: createWillowFirework },
+        // Phase 1: Slow & Romantic Beginning (0-20s) - Gentle, sweet starts
+        { delay: 0, type: createHeartFirework },
+        { delay: 2500, type: createPeonyFirework },
+        { delay: 5000, type: createHeartFirework },
+        { delay: 7500, type: createFlowerFirework },
+        { delay: 10000, type: createHeartFirework },
+        { delay: 12500, type: createButterflyFirework },
+        { delay: 15000, type: createHeartFirework },
+        { delay: 17500, type: createPeonyFirework },
 
-        // Phase 2: Slow dramatic (5-15s) - Spaced out
-        { delay: 6000, type: createHeartFirework },
-        { delay: 7500, type: createStarFirework },
-        { delay: 9000, type: createHeartFirework },
-        { delay: 10500, type: createSpiralFirework },
-        { delay: 12000, type: createHeartFirework },
-        { delay: 13500, type: createDoubleRingFirework },
-
-        // Phase 3: Medium pace with shapes (15-25s)
-        { delay: 15500, type: createStarFirework },
-        { delay: 16500, type: createHeartFirework },
-        { delay: 17500, type: createStarFirework },
-        { delay: 18500, type: createHeartFirework },
-        { delay: 19500, type: createWillowFirework },
-        { delay: 20500, type: createSpiralFirework },
+        // Phase 2: Building Romance (20-35s) - Mix of romantic & colorful
+        { delay: 20000, type: createStarFirework },
         { delay: 21500, type: createHeartFirework },
-        { delay: 22500, type: createStarFirework },
+        { delay: 23000, type: createFlowerFirework },
+        { delay: 24500, type: createDiamondFirework },
+        { delay: 26000, type: createHeartFirework },
+        { delay: 27500, type: createButterflyFirework },
+        { delay: 29000, type: createPeonyFirework },
+        { delay: 30500, type: createStarFirework },
+        { delay: 32000, type: createHeartFirework },
+        { delay: 33500, type: createFlowerFirework },
 
-        // Phase 4: Grand finale rapid fire (25-32s)
-        { delay: 25000, type: createCircleFirework },
-        { delay: 25400, type: createStarFirework },
-        { delay: 25800, type: createHeartFirework },
-        { delay: 26200, type: createRingFirework },
-        { delay: 26600, type: createWillowFirework },
-        { delay: 27000, type: createSpiralFirework },
-        { delay: 27400, type: createDoubleRingFirework },
-        { delay: 27800, type: createHeartFirework },
-        { delay: 28200, type: createStarFirework },
-        { delay: 28600, type: createCircleFirework },
-        { delay: 29000, type: createHeartFirework },
-        { delay: 29400, type: createStarFirework },
-        { delay: 29800, type: createRingFirework },
-        { delay: 30200, type: createWillowFirework },
-        { delay: 30600, type: createHeartFirework },
-        { delay: 31000, type: createStarFirework }
+        // Phase 3: Accelerating (35-48s) - Faster pace with variety
+        { delay: 35000, type: createCircleFirework },
+        { delay: 36000, type: createHeartFirework },
+        { delay: 37000, type: createRingFirework },
+        { delay: 38000, type: createStarFirework },
+        { delay: 39000, type: createWillowFirework },
+        { delay: 40000, type: createHeartFirework },
+        { delay: 41000, type: createSpiralFirework },
+        { delay: 42000, type: createButterflyFirework },
+        { delay: 43000, type: createDoubleRingFirework },
+        { delay: 44000, type: createFlowerFirework },
+        { delay: 45000, type: createHeartFirework },
+        { delay: 46000, type: createChrysanthemumFirework },
+        { delay: 47000, type: createStarFirework },
+
+        // Phase 4: GRAND FINALE (48-61s) - Rapid fire spectacular!
+        { delay: 48000, type: createHeartFirework },
+        { delay: 48500, type: createStarFirework },
+        { delay: 49000, type: createCircleFirework },
+        { delay: 49500, type: createHeartFirework },
+        { delay: 50000, type: createRingFirework },
+        { delay: 50500, type: createFlowerFirework },
+        { delay: 51000, type: createWillowFirework },
+        { delay: 51500, type: createHeartFirework },
+        { delay: 52000, type: createSpiralFirework },
+        { delay: 52500, type: createButterflyFirework },
+        { delay: 53000, type: createDoubleRingFirework },
+        { delay: 53500, type: createHeartFirework },
+        { delay: 54000, type: createDiamondFirework },
+        { delay: 54500, type: createStarFirework },
+        { delay: 55000, type: createCrossetteFirework },
+        { delay: 55500, type: createHeartFirework },
+        { delay: 56000, type: createPalmFirework },
+        { delay: 56500, type: createFlowerFirework },
+        { delay: 57000, type: createTripleRingFirework },
+        { delay: 57500, type: createHeartFirework },
+        { delay: 58000, type: createChrysanthemumFirework },
+        { delay: 58500, type: createStarFirework },
+        { delay: 59000, type: createPeonyFirework },
+        { delay: 59500, type: createHeartFirework },
+        { delay: 60000, type: createLoveBurstFirework },
+        { delay: 60500, type: createHeartFirework }
     ];
 
     sequence.forEach(item => {
@@ -301,10 +458,10 @@ pipe.addEventListener('click', () => {
         }, item.delay);
     });
 
-    // Show message after fireworks
+    // Show message after 61 seconds
     setTimeout(() => {
         messageOverlay.classList.add('show');
-    }, 33000);
+    }, 61000);
 });
 
 function animate() {
