@@ -326,6 +326,228 @@ function createLoveBurstFirework(x, y) {
     }, 100);
 }
 
+// Sparkle Hearts - Multiple small hearts cascading
+function createSparkleHeartsFirework(x, y) {
+    const colors = ['#ff1493', '#ff69b4', '#ffb6c1', '#ffc0cb'];
+    
+    for (let h = 0; h < 5; h++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const offsetX = (Math.random() - 0.5) * 60;
+        const offsetY = (Math.random() - 0.5) * 60;
+        
+        for (let t = 0; t < Math.PI * 2; t += 0.15) {
+            const heartX = 8 * Math.pow(Math.sin(t), 3);
+            const heartY = -(6.5 * Math.cos(t) - 2.5 * Math.cos(2 * t) - Math.cos(3 * t) - 0.5 * Math.cos(4 * t));
+            
+            particles.push(new Particle(x, y, color, 
+                (heartX + offsetX) / 8, 
+                (heartY + offsetY) / 8));
+        }
+    }
+}
+
+// Cupid's Arrow - Arrow shooting with trailing hearts
+function createCupidArrowFirework(x, y) {
+    const pink = '#ff69b4';
+    const gold = '#ffd700';
+    
+    // Arrow shaft
+    for (let i = 0; i < 20; i++) {
+        particles.push(new Particle(x, y, gold, i * 0.3, 0));
+    }
+    
+    // Arrow tip
+    particles.push(new Particle(x, y, '#ff0000', 6, -1));
+    particles.push(new Particle(x, y, '#ff0000', 6, 1));
+    
+    // Trailing hearts
+    for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+            for (let t = 0; t < Math.PI * 2; t += 0.2) {
+                const heartX = 5 * Math.pow(Math.sin(t), 3);
+                const heartY = -(4 * Math.cos(t) - 1.5 * Math.cos(2 * t) - 0.5 * Math.cos(3 * t));
+                particles.push(new Particle(x + i * 15, y, pink, heartX / 10, heartY / 10));
+            }
+        }, i * 50);
+    }
+}
+
+// Rose Burst - Beautiful rose petals spreading
+function createRoseBurstFirework(x, y) {
+    const colors = ['#ff0066', '#ff3385', '#ff66a3', '#ff99c2'];
+    
+    for (let petal = 0; petal < 8; petal++) {
+        const angle = (Math.PI * 2 * petal) / 8;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        for (let i = 0; i < 15; i++) {
+            const r = i * 0.3;
+            const petalAngle = angle + Math.sin(i * 0.5) * 0.5;
+            particles.push(new Particle(
+                x, y, color,
+                Math.cos(petalAngle) * (2 + r / 3),
+                Math.sin(petalAngle) * (2 + r / 3)
+            ));
+        }
+    }
+}
+
+// Rainbow Hearts - Hearts in rainbow colors
+function createRainbowHeartsFirework(x, y) {
+    const rainbowColors = ['#ff0000', '#ff7700', '#ffff00', '#00ff00', '#0099ff', '#4B0082', '#9400D3'];
+    
+    rainbowColors.forEach((color, index) => {
+        const offsetAngle = (Math.PI * 2 * index) / rainbowColors.length;
+        const radius = 40;
+        const hx = x + Math.cos(offsetAngle) * radius;
+        const hy = y + Math.sin(offsetAngle) * radius;
+        
+        for (let t = 0; t < Math.PI * 2; t += 0.2) {
+            const heartX = 6 * Math.pow(Math.sin(t), 3);
+            const heartY = -(5 * Math.cos(t) - 2 * Math.cos(2 * t) - Math.cos(3 * t) - 0.5 * Math.cos(4 * t));
+            particles.push(new Particle(hx, hy, color, heartX / 15, heartY / 15));
+        }
+    });
+}
+
+// Angel Wings - Spread like angel wings
+function createAngelWingsFirework(x, y) {
+    const colors = ['#ffffff', '#fffacd', '#fff8dc', '#f0f8ff'];
+    
+    for (let side = -1; side <= 1; side += 2) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        for (let i = 0; i < 40; i++) {
+            const t = (i / 40) * Math.PI;
+            const wingX = side * (Math.sin(t) * 10 + 5);
+            const wingY = -Math.cos(t) * 8;
+            
+            particles.push(new Particle(
+                x, y, color,
+                wingX / 4,
+                wingY / 4
+            ));
+        }
+    }
+}
+
+// Starburst Love - Stars bursting with hearts
+function createStarburstLoveFirework(x, y) {
+    createStarFirework(x, y);
+    
+    setTimeout(() => {
+        for (let i = 0; i < 4; i++) {
+            const angle = (Math.PI * 2 * i) / 4;
+            const dist = 50;
+            const hx = x + Math.cos(angle) * dist;
+            const hy = y + Math.sin(angle) * dist;
+            
+            for (let t = 0; t < Math.PI * 2; t += 0.3) {
+                const heartX = 5 * Math.pow(Math.sin(t), 3);
+                const heartY = -(4 * Math.cos(t) - 1.5 * Math.cos(2 * t) - 0.5 * Math.cos(3 * t));
+                particles.push(new Particle(hx, hy, '#ff1493', heartX / 15, heartY / 15));
+            }
+        }
+    }, 150);
+}
+
+// Glitter Cascade - Sparkling cascade effect
+function createGlitterCascadeFirework(x, y) {
+    const colors = ['#ffd700', '#ffed4e', '#fff68f', '#fffacd'];
+    
+    for (let i = 0; i < 80; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3 + 1;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particles.push(new Particle(
+            x, y, color,
+            Math.cos(angle) * speed,
+            Math.sin(angle) * speed + 2
+        ));
+    }
+}
+
+// Love Fountain - Fountain of hearts going upward
+function createLoveFountainFirework(x, y) {
+    const colors = ['#ff1493', '#ff69b4', '#ffb6c1'];
+    
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let t = 0; t < Math.PI * 2; t += 0.25) {
+                const heartX = 4 * Math.pow(Math.sin(t), 3);
+                const heartY = -(3 * Math.cos(t) - 1.2 * Math.cos(2 * t) - 0.5 * Math.cos(3 * t));
+                
+                particles.push(new Particle(
+                    x + (Math.random() - 0.5) * 20, 
+                    y, 
+                    color, 
+                    heartX / 10 + (Math.random() - 0.5), 
+                    heartY / 10 - 3 - Math.random()
+                ));
+            }
+        }, i * 30);
+    }
+}
+
+// Crystal Hearts - Shimmering crystalline hearts
+function createCrystalHeartsFirework(x, y) {
+    const colors = ['#e0ffff', '#afeeee', '#87ceeb', '#b0e0e6'];
+    
+    for (let layer = 0; layer < 3; layer++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const scale = 1 - layer * 0.2;
+        
+        for (let t = 0; t < Math.PI * 2; t += 0.12) {
+            const heartX = 12 * Math.pow(Math.sin(t), 3) * scale;
+            const heartY = -(10 * Math.cos(t) - 4 * Math.cos(2 * t) - 1.5 * Math.cos(3 * t) - 0.5 * Math.cos(4 * t)) * scale;
+            
+            particles.push(new Particle(x, y, color, heartX / 12, heartY / 12));
+        }
+    }
+}
+
+// Shooting Stars with Hearts
+function createShootingStarHeartsFirework(x, y) {
+    for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8;
+        const distance = 80;
+        
+        setTimeout(() => {
+            const startX = x + Math.cos(angle) * distance;
+            const startY = y + Math.sin(angle) * distance;
+            
+            // Star trail
+            for (let j = 0; j < 15; j++) {
+                particles.push(new Particle(
+                    startX - Math.cos(angle) * j * 3,
+                    startY - Math.sin(angle) * j * 3,
+                    '#ffd700',
+                    Math.cos(angle) * 5,
+                    Math.sin(angle) * 5
+                ));
+            }
+            
+            // Heart at the end
+            for (let t = 0; t < Math.PI * 2; t += 0.2) {
+                const heartX = 5 * Math.pow(Math.sin(t), 3);
+                const heartY = -(4 * Math.cos(t) - 1.5 * Math.cos(2 * t) - 0.5 * Math.cos(3 * t));
+                particles.push(new Particle(startX, startY, '#ff1493', heartX / 10, heartY / 10));
+            }
+        }, i * 80);
+    }
+}
+
+// Love burst
+function createLoveBurstFirework(x, y) {
+    createHeartFirework(x, y);
+    setTimeout(() => {
+        createHeartFirework(x + 50, y - 30);
+        createHeartFirework(x - 50, y - 30);
+    }, 100);
+}
+
 function launchRocket(startX, startY, targetX, targetY, callback) {
     let rocket = {
         x: startX,
@@ -398,11 +620,12 @@ function launchFireworksBurst(duration, startX, startY) {
 // Messages to display
 const messages = [
     "SORRY NAAA BYYYY. COMPARED TO YOUR TRUST, MINE IS NOTHING, BUT I HOPE YOU'LL STILL STAY WITH ME AND UNDERSTAND WHY I GOT CONSCIOUS.",
-    "I DON'T WANT TO LOSE YOU, I LOVE YOU SO MUCH<br>ALLIAH BIANCA PELEGRINO",
+    "I DON'T WANT TO LOSE YOU BY, I LOVE YOU ALLIAH BIANCA PELEGRINO",
     "HAPPY SECOND MONTHSARY MY PRETTY BABY IAAAAH!",
     "MORE MONTHSARIES TOGETHER BYYY AND SOON ANNIVERSARIES!",
     "NALATE AKONG PA FIREWORKS KAY WALA KO KA LAPTOP SA HOLIDAYS.",
-    "YOU DESERVE THESE EFFORTS BY. YOU DESERVE EVERYTHING. YOU'RE WORTH MORE THAN YOU IMAGINE."
+    "YOU DESERVE THESE EFFORTS BY. YOU DESERVE EVERYTHING. YOU'RE WORTH MORE THAN YOU IMAGINE.",
+    "I CAN'T WAIT TO BE WITH YOU BYYY. I DO LOVE YOUUU GANDAAA!!!"
 ];
 
 let currentMessageIndex = 0;
@@ -421,69 +644,68 @@ pipe.addEventListener('click', () => {
     // 61-second romantic fireworks show FIRST
     const sequence = [
         // Phase 1: Slow & Romantic Beginning (0-20s) - Gentle, sweet starts
-        { delay: 0, type: createHeartFirework },
-        { delay: 2500, type: createPeonyFirework },
-        { delay: 5000, type: createHeartFirework },
+        { delay: 0, type: createSparkleHeartsFirework },
+        { delay: 2500, type: createHeartFirework },
+        { delay: 5000, type: createRoseBurstFirework },
         { delay: 7500, type: createFlowerFirework },
-        { delay: 10000, type: createHeartFirework },
+        { delay: 10000, type: createAngelWingsFirework },
         { delay: 12500, type: createButterflyFirework },
-        { delay: 15000, type: createHeartFirework },
+        { delay: 15000, type: createCrystalHeartsFirework },
         { delay: 17500, type: createPeonyFirework },
 
         // Phase 2: Building Romance (20-35s) - Mix of romantic & colorful
-        { delay: 20000, type: createStarFirework },
+        { delay: 20000, type: createCupidArrowFirework },
         { delay: 21500, type: createHeartFirework },
-        { delay: 23000, type: createFlowerFirework },
+        { delay: 23000, type: createRainbowHeartsFirework },
         { delay: 24500, type: createDiamondFirework },
-        { delay: 26000, type: createHeartFirework },
-        { delay: 27500, type: createButterflyFirework },
-        { delay: 29000, type: createPeonyFirework },
-        { delay: 30500, type: createStarFirework },
-        { delay: 32000, type: createHeartFirework },
-        { delay: 33500, type: createFlowerFirework },
+        { delay: 26000, type: createSparkleHeartsFirework },
+        { delay: 27500, type: createStarFirework },
+        { delay: 29000, type: createRoseBurstFirework },
+        { delay: 30500, type: createButterflyFirework },
+        { delay: 32000, type: createFlowerFirework },
+        { delay: 33500, type: createCrystalHeartsFirework },
 
         // Phase 3: Accelerating (35-48s) - Faster pace with variety
-        { delay: 35000, type: createCircleFirework },
-        { delay: 36000, type: createHeartFirework },
-        { delay: 37000, type: createRingFirework },
-        { delay: 38000, type: createStarFirework },
-        { delay: 39000, type: createWillowFirework },
-        { delay: 40000, type: createHeartFirework },
-        { delay: 41000, type: createSpiralFirework },
-        { delay: 42000, type: createButterflyFirework },
-        { delay: 43000, type: createDoubleRingFirework },
-        { delay: 44000, type: createFlowerFirework },
+        { delay: 35000, type: createStarburstLoveFirework },
+        { delay: 36000, type: createCircleFirework },
+        { delay: 37000, type: createLoveFountainFirework },
+        { delay: 38000, type: createRingFirework },
+        { delay: 39000, type: createGlitterCascadeFirework },
+        { delay: 40000, type: createWillowFirework },
+        { delay: 41000, type: createRainbowHeartsFirework },
+        { delay: 42000, type: createSpiralFirework },
+        { delay: 43000, type: createButterflyFirework },
+        { delay: 44000, type: createDoubleRingFirework },
         { delay: 45000, type: createHeartFirework },
         { delay: 46000, type: createChrysanthemumFirework },
-        { delay: 47000, type: createStarFirework },
+        { delay: 47000, type: createShootingStarHeartsFirework },
 
         // Phase 4: GRAND FINALE (48-61s) - Rapid fire spectacular!
-        { delay: 48000, type: createHeartFirework },
-        { delay: 48500, type: createStarFirework },
-        { delay: 49000, type: createCircleFirework },
-        { delay: 49500, type: createHeartFirework },
-        { delay: 50000, type: createRingFirework },
-        { delay: 50500, type: createFlowerFirework },
-        { delay: 51000, type: createWillowFirework },
-        { delay: 51500, type: createHeartFirework },
-        { delay: 52000, type: createSpiralFirework },
-        { delay: 52500, type: createButterflyFirework },
-        { delay: 53000, type: createDoubleRingFirework },
-        { delay: 53500, type: createHeartFirework },
-        { delay: 54000, type: createDiamondFirework },
+        { delay: 48000, type: createLoveBurstFirework },
+        { delay: 48500, type: createSparkleHeartsFirework },
+        { delay: 49000, type: createTripleRingFirework },
+        { delay: 49500, type: createRoseBurstFirework },
+        { delay: 50000, type: createCupidArrowFirework },
+        { delay: 50500, type: createAngelWingsFirework },
+        { delay: 51000, type: createRainbowHeartsFirework },
+        { delay: 51500, type: createStarburstLoveFirework },
+        { delay: 52000, type: createCrystalHeartsFirework },
+        { delay: 52500, type: createGlitterCascadeFirework },
+        { delay: 53000, type: createButterflyFirework },
+        { delay: 53500, type: createDiamondFirework },
+        { delay: 54000, type: createFlowerFirework },
         { delay: 54500, type: createStarFirework },
         { delay: 55000, type: createCrossetteFirework },
         { delay: 55500, type: createHeartFirework },
         { delay: 56000, type: createPalmFirework },
-        { delay: 56500, type: createFlowerFirework },
+        { delay: 56500, type: createLoveFountainFirework },
         { delay: 57000, type: createTripleRingFirework },
-        { delay: 57500, type: createHeartFirework },
+        { delay: 57500, type: createRainbowHeartsFirework },
         { delay: 58000, type: createChrysanthemumFirework },
-        { delay: 58500, type: createStarFirework },
+        { delay: 58500, type: createStarburstLoveFirework },
         { delay: 59000, type: createPeonyFirework },
-        { delay: 59500, type: createHeartFirework },
-        { delay: 60000, type: createLoveBurstFirework },
-        { delay: 60500, type: createHeartFirework }
+        { delay: 59500, type: createCrystalHeartsFirework },
+        { delay: 60000, type: createLoveBurstFirework }
     ];
 
     sequence.forEach(item => {
@@ -514,7 +736,7 @@ function showNextMessage(startX, startY) {
     messageOverlay.classList.remove('hide');
     messageOverlay.classList.add('show');
 
-    // After 7 seconds, hide message and start fireworks
+    // After 10 seconds, hide message and start fireworks
     setTimeout(() => {
         messageOverlay.classList.remove('show');
         messageOverlay.classList.add('hide');
@@ -524,13 +746,13 @@ function showNextMessage(startX, startY) {
             // Launch fireworks for 5 seconds
             launchFireworksBurst(5000, startX, startY);
 
-            // After 5 seconds of fireworks, show next message
+            // After 7 seconds of fireworks, show next message
             setTimeout(() => {
                 currentMessageIndex++;
                 showNextMessage(startX, startY);
-            }, 5000);
+            }, 7000);
         }, 1000); // Wait for hide animation
-    }, 7000); // Show message for 7 seconds
+    }, 10000); // Show message for 10 seconds
 }
 
 function animate() {
