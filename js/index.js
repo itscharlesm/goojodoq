@@ -2,6 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const pipe = document.getElementById('pipe');
 const messageOverlay = document.getElementById('messageOverlay');
+const loveMessage = document.getElementById('loveMessage');
 const instruction = document.getElementById('instruction');
 const bgMusic = document.getElementById('bgMusic');
 
@@ -182,7 +183,7 @@ function createDoubleRingFirework(x, y) {
     }
 }
 
-// NEW: Butterfly firework
+// Butterfly firework
 function createButterflyFirework(x, y) {
     const colors = ['#ff99cc', '#ffccff', '#cc99ff', '#ff66cc'];
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -196,7 +197,7 @@ function createButterflyFirework(x, y) {
     }
 }
 
-// NEW: Flower firework
+// Flower firework
 function createFlowerFirework(x, y) {
     const colors = ['#ff1493', '#ff69b4', '#ffb6c1', '#ffc0cb'];
     
@@ -216,7 +217,7 @@ function createFlowerFirework(x, y) {
     }
 }
 
-// NEW: Diamond firework
+// Diamond firework
 function createDiamondFirework(x, y) {
     const colors = ['#00ffff', '#66ffff', '#99ffff', '#ccffff'];
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -237,7 +238,7 @@ function createDiamondFirework(x, y) {
     });
 }
 
-// NEW: Crossette firework (explodes then each particle explodes again)
+// Crossette firework
 function createCrossetteFirework(x, y) {
     const colors = ['#ff0000', '#ff6600', '#ffff00'];
     
@@ -253,7 +254,7 @@ function createCrossetteFirework(x, y) {
     }
 }
 
-// NEW: Palm tree firework
+// Palm tree firework
 function createPalmFirework(x, y) {
     const colors = ['#ffaa00', '#ffcc00', '#ffee00'];
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -269,7 +270,7 @@ function createPalmFirework(x, y) {
     }
 }
 
-// NEW: Chrysanthemum (dense burst)
+// Chrysanthemum
 function createChrysanthemumFirework(x, y) {
     const colors = ['#9900ff', '#cc00ff', '#ff00ff', '#ff66ff'];
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -285,7 +286,7 @@ function createChrysanthemumFirework(x, y) {
     }
 }
 
-// NEW: Peony firework (soft romantic burst)
+// Peony firework
 function createPeonyFirework(x, y) {
     const colors = ['#ffb6c1', '#ffc0cb', '#ffccdd', '#ffe4e1'];
     const color = colors[Math.floor(Math.random() * colors.length)];
@@ -295,7 +296,7 @@ function createPeonyFirework(x, y) {
     }
 }
 
-// NEW: Triple ring firework
+// Triple ring firework
 function createTripleRingFirework(x, y) {
     const colorSets = [
         ['#ff0000', '#00ff00', '#0000ff'],
@@ -316,7 +317,7 @@ function createTripleRingFirework(x, y) {
     }
 }
 
-// NEW: Love burst (alternating hearts)
+// Love burst
 function createLoveBurstFirework(x, y) {
     createHeartFirework(x, y);
     setTimeout(() => {
@@ -368,6 +369,42 @@ function launchRocket(startX, startY, targetX, targetY, callback) {
     animateRocket();
 }
 
+// Function to launch a burst of fireworks
+function launchFireworksBurst(duration, startX, startY) {
+    const interval = 500; // Launch every 500ms
+    const count = duration / interval;
+    
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            const targetX = Math.random() * canvas.width * 0.6 + canvas.width * 0.2;
+            const targetY = Math.random() * canvas.height * 0.4 + 50;
+            
+            const fireworkTypes = [
+                createHeartFirework, createStarFirework, createCircleFirework,
+                createRingFirework, createSpiralFirework, createWillowFirework,
+                createDoubleRingFirework, createButterflyFirework, createFlowerFirework,
+                createDiamondFirework, createPeonyFirework
+            ];
+            
+            const randomType = fireworkTypes[Math.floor(Math.random() * fireworkTypes.length)];
+            
+            launchRocket(startX, startY, targetX, targetY, (x, y) => {
+                randomType(x, y);
+            });
+        }, i * interval);
+    }
+}
+
+// Messages to display
+const messages = [
+    "I LOVE YOU<br>ALLIAH BIANCA PELEGRINO",
+    "HAPPY SECOND MONTHSARY",
+    "More monthsaries to come",
+    "testing message"
+];
+
+let currentMessageIndex = 0;
+
 pipe.addEventListener('click', () => {
     if (hasLaunched) return;
     hasLaunched = true;
@@ -379,7 +416,7 @@ pipe.addEventListener('click', () => {
     const startX = pipeRect.left + pipeRect.width / 2;
     const startY = pipeRect.top;
 
-    // 61-second romantic fireworks show
+    // 61-second romantic fireworks show FIRST
     const sequence = [
         // Phase 1: Slow & Romantic Beginning (0-20s) - Gentle, sweet starts
         { delay: 0, type: createHeartFirework },
@@ -458,11 +495,41 @@ pipe.addEventListener('click', () => {
         }, item.delay);
     });
 
-    // Show message after 61 seconds
+    // After 61 seconds, start the message sequence
     setTimeout(() => {
-        messageOverlay.classList.add('show');
+        showNextMessage(startX, startY);
     }, 61000);
 });
+
+function showNextMessage(startX, startY) {
+    if (currentMessageIndex >= messages.length) {
+        // All messages shown, sequence complete
+        return;
+    }
+
+    // Show current message
+    loveMessage.innerHTML = messages[currentMessageIndex];
+    messageOverlay.classList.remove('hide');
+    messageOverlay.classList.add('show');
+
+    // After 5 seconds, hide message and start fireworks
+    setTimeout(() => {
+        messageOverlay.classList.remove('show');
+        messageOverlay.classList.add('hide');
+
+        // Wait for fade out animation, then start fireworks
+        setTimeout(() => {
+            // Launch fireworks for 5 seconds
+            launchFireworksBurst(5000, startX, startY);
+
+            // After 5 seconds of fireworks, show next message
+            setTimeout(() => {
+                currentMessageIndex++;
+                showNextMessage(startX, startY);
+            }, 5000);
+        }, 1000); // Wait for hide animation
+    }, 5000); // Show message for 5 seconds
+}
 
 function animate() {
     ctx.fillStyle = 'rgba(10, 14, 39, 0.1)';
