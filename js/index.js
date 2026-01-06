@@ -397,10 +397,12 @@ function launchFireworksBurst(duration, startX, startY) {
 
 // Messages to display
 const messages = [
-    "I LOVE YOU<br>ALLIAH BIANCA PELEGRINO",
-    "HAPPY SECOND MONTHSARY",
-    "More monthsaries to come",
-    "testing message"
+    "SORRY NAAA BYYYY. COMPARED TO YOUR TRUST, MINE IS NOTHING, BUT I HOPE YOU'LL STILL STAY WITH ME AND UNDERSTAND WHY I GOT CONSCIOUS.",
+    "I DON'T WANT TO LOSE YOU, I LOVE YOU SO MUCH<br>ALLIAH BIANCA PELEGRINO",
+    "HAPPY SECOND MONTHSARY MY PRETTY BABY IAAAAH!",
+    "MORE MONTHSARIES TOGETHER BYYY AND SOON ANNIVERSARIES!",
+    "NALATE AKONG PA FIREWORKS KAY WALA KO KA LAPTOP SA HOLIDAYS.",
+    "YOU DESERVE THESE EFFORTS BY. YOU DESERVE EVERYTHING. YOU'RE WORTH MORE THAN YOU IMAGINE."
 ];
 
 let currentMessageIndex = 0;
@@ -512,7 +514,7 @@ function showNextMessage(startX, startY) {
     messageOverlay.classList.remove('hide');
     messageOverlay.classList.add('show');
 
-    // After 5 seconds, hide message and start fireworks
+    // After 7 seconds, hide message and start fireworks
     setTimeout(() => {
         messageOverlay.classList.remove('show');
         messageOverlay.classList.add('hide');
@@ -528,7 +530,7 @@ function showNextMessage(startX, startY) {
                 showNextMessage(startX, startY);
             }, 5000);
         }, 1000); // Wait for hide animation
-    }, 5000); // Show message for 5 seconds
+    }, 7000); // Show message for 7 seconds
 }
 
 function animate() {
